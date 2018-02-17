@@ -39,7 +39,8 @@ function newConnection(socket){
 			randData = getRandomInt(0, 100);
 		}, 3000);
 
-		//socket.broadcast.emit('ServerToClient', randData);
+		socket.broadcast.emit('ServerToClient', randData);
+		console.log(randData);
 		//following line refers to sending data to all
 		//io.sockets.emit('mouse', data);
 		console.log(data);
