@@ -4,9 +4,11 @@ var socket = require('socket.io');
 //store the express functions to var app
 var app = express();
 //Create a server on localhost:3000
-var server = app.listen((process.env.PORT || 3000, function(){
-  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
-});
+var server = app.listen(3000);
+
+//var server = app.listen((process.env.PORT || 3000, function(){
+  //console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+//});
 //host content as static on public
 app.use(express.static('public'));
 
