@@ -5,7 +5,7 @@ var x = 'initial';
 
 app.set('port',(process.env.PORT || 5000));
 app.get('/', function(req, res){
-	res.sendFile(_dirname + 'index.html');
+	res.sendFile(_dirname + 'public/index.html');
 });
 
 io.on('Connection', function(socket){
