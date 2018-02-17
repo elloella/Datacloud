@@ -42,7 +42,7 @@ let yCircular = 0;
 
 //sockets
 let socket;
-let incomingData;
+let incomingData = 0;
 
 function setup() {
   createCanvas(1280, 720, WEBGL);
