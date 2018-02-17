@@ -11,6 +11,17 @@ const server = express()
   .use((req, res) => res.sendFile(INDEX) )
   .listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
+app.use('/js', express.static(__dirname + '/js'));
+app.use('/Blob', express.static(__dirname + 'public/Blob'));
+app.use('/Cubes', express.static(__dirname + 'public/Cubes'));
+app.use('/sketch', express.static(__dirname + 'public/sketch'));
+app.use('/sockets', express.static(__dirname + 'public/sockets'));
+
+	app.all('/*', function(req, res, next) {
+	    // Just send the index.html for other files to support HTML5Mode
+	    res.sendFile('index.html', { root: __dirname });
+	});
+
 const io = socketIO(server);
 
 io.on('connection', (socket) => {
