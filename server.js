@@ -17,13 +17,29 @@ var io = socket(server);
 //dealing with server events / connection
 io.sockets.on('connection', newConnection); //callback
 
+
+//function to get a random number, from a minimum to a maximum value
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  //The maximum is exclusive and the minimum is inclusive
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
 //function that serves the new connection
 function newConnection(socket){
 	console.log('New connection: ' + socket.id);
 	socket.on('incomingDataToServer', emitFunction);
 
 	function emitFunction(data){
-		socket.broadcast.emit('ServerToClient', data);
+		let randData;
+		//the setInterval function process the content every 1000ms
+		setInterval(function(){
+			//get a random value, and assign it a new variable
+			randData = getRandomInt(0, 100);
+		}, 3000);
+
+		socket.broadcast.emit('ServerToClient', randData);
 		//following line refers to sending data to all
 		//io.sockets.emit('mouse', data);
 		console.log(data);
