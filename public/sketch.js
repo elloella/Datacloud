@@ -1,94 +1,122 @@
-var circleObject = [];
-var socket;
+/*
+Virus network 3d
+https://www.openprocessing.org/sketch/387531
+
+ Author:
+ Jason Labbe
+
+ Site:
+ jasonlabbe3d.com
+
+ Controls:
+ - Hold left-click to rotate camera.
+ - Hold middle-click to move camera.
+ - Hold right-click to zoom or scroll mouse wheel to zoom.
+ */
+
+//var client  = mqtt.connect('wxs://test.mosquitto.org')
+
+let depth = 800;
+
+let widthOffset;
+let heightOffset;
+let depthOffset;
+
+let blobArray = [];
+let blobArraySize = 100;
+
+let cubes = [];
+let cubeSize = 20;
+
+//let mouseClick;
+let posStart;
+let rotStart;
+let zoomStart = 0;
+let cameraPos;
+let cameraRot;
+let cameraZoom = -800;
+let angleX = 0; //circular motion - angle
+let angleY = 0;
+let xCircular = 0;
+let yCircular = 0;
+
+//sockets
+let socket;
 
 function setup() {
-  createCanvas(600, 400);  
-  background(255); 
-  smooth(8); 
-  strokeWeight(1); 
-  circleObject.push(new Circle(width/2, height/2, random(100,1000)));
-  socket = io.connect('http://localhost:5000');
-  socket.on('clickEvent', newDrawing);
-}
+  createCanvas(1280, 720, WEBGL);
+  setAttributes('antialias', true);
 
-function newDrawing(data){
-  console.log(data);
-  circleObject.push(new Circle(data.xData, data.yData, data.speedXData, data.speedYData, data.radiusData, data.rData, data.gData, data.bData, data.lifeData, random(100,1000)));
-}
+  //socket = io.connect('http://localhost:1880/simple');
+  //socket.on('getEvents', socketEvents);
 
-function mousePressed(){
-  var speedX = random(10.) - 5.;
-  var speedY = random(10.) - 5.;
-  var radiusCircle= parseInt(random(100+10));
-  var r = parseInt(random(255));
-  var g = parseInt(random(255));
-  var b = parseInt(random(255));
-  var life = parseInt(random(100,1000));
+  //mouseClick = createVector(width/2, height/2);
+  posStart = createVector(width/2, height/2);
+  rotStart = createVector(width/2, height/2);
+  posStart = createVector(width/2, height/2);
+  cameraPos = createVector(width/2, height/2);
+  cameraRot = createVector(width/2, height/2);
 
-  circleObject.push(new Circle(mouseX, mouseY, speedX, speedY, radiusCircle, r, g, b, life));
-  var data = {
-    xData: mouseX,
-    yData: mouseY,
-    speedXData: speedX,
-    speedYData: speedY,
-    radiusData: radiusCircle,
-    rData: r,
-    gData: g,
-    bData: b,
-    lifeData: life
+  for (let i=0; i<blobArraySize; i++){
+    blobArray[i] = new Blob(random(0.0, width), random(0.0, height), random(0.0, depth), random(0.1, 1.0));
   }
-  socket.emit('clickEvent', data);
+  let initVec = createVector(width/2, height/2, 0);
+
+  for (let i=0; i<1; i++){
+    cubes[i] = new Cubes(initVec, frameCount+4);
+  }
+
+  //MQTT setup
+  //client = new MQTTClient(this);
+  //client.connect("mqtt://broker.i-dat.org:80", "processing");
+  //client.subscribe("homeNR/light");
+
+  //hint(DISABLE_DEPTH_TEST);
+
+  widthOffset = width/2;
+  heightOffset = height/2;
+  depthOffset = depth/2;
+
+  //for (let i = 0; i < Count; i++) {
+    //blobs.add(new blobBlob(random(0.0, width), random(0.0, height), random(0.0, depth), random(0.5, 2.0)));
+  //}
 }
 
 function draw() {
-  background(255);
-  for (var i=0; i<circleObject.length; i++) {
-    circleObject[i].drawCircle();
-    circleObject[i].motion();
-    circleObject[i].destroy();
-    //console.log(circleObject.length);
-    if (circleObject[i].destroy() <= 0) {
-      circleObject.splice(i,1);
+  background(0, 20, 30);
+  makeCircularMotion();
+
+  push();
+    translate(-width/2+100, -300, 400);
+    translate(cameraPos.x, cameraPos.y, cameraZoom);
+    rotateY(radians(cameraRot.x));
+    rotateX(radians(-cameraRot.y));
+
+    for (let i=0; i< blobArray.length; i++) {
+      blobArray[i].move();
+      blobArray[i].keepInBounds();
+      blobArray[i].draw();
     }
-  }
+
+    for (let x = 0; x < cubes.length; x++) {
+      cubes[x].display();
+      if (cubes[x].destroy() <= 0) {
+        cubes.splice(x,1);
+      }
+    }
+  pop();
 }
 
-function Circle(_x, _y, _speedX, _speedY, _radius, _r, _g, _b, _timer){
-  this.x = _x;
-  this.y = _y;
-  this.xMove = _speedX;
-  this.yMove = _speedY;
-  this.radius= _radius;
+//Initializes camera controls
+function makeCircularMotion() {
+  angleX += 0.2;
+  angleY += 0.22;
+  xCircular = angleX % 360;
+  yCircular = angleY % 360;
 
-  this.rd = _r;
-  this.grn = _g;
-  this.bl = _b;
-  this.a = 255;
-
-  this.timer = _timer;
-  this.initTime = _timer;
-
-  this.drawCircle = function(){
-    noStroke();
-    fillcol = color(this.rd, this.grn, this.bl, this.a)
-    fill(fillcol);
-    ellipse(this.x, this.y, this.radius*2, this.radius*2);
-  }
-
-  this.motion = function(){
-    this.x += this.xMove;
-    this.y += this.yMove;
-    if (this.x > (width+this.radius)) this.x = 0 - this.radius;
-    if (this.x < (0-this.radius)) this.x = width+this.radius;
-    if (this.y > (height+this.radius)) this.y = 0 - this.radius;
-    if (this.y < (0-this.radius)) this.y = height+this.radius;
-  }
-
-  this.destroy = function(){
-    var getTimer;
-    this.timer--;
-    getTimer = this.timer;
-    this.a = map(this.timer, 0, this.initTime, 0, 255);
-    return getTimer;
-  }
+  rotStart.set(cameraRot.x, cameraRot.y);
+  posStart.set(cameraPos.x, cameraPos.y);
+  //mouseClick.set(xCircular, yCircular);
+  cameraRot.x = xCircular;
+  cameraRot.y = yCircular;
 }
