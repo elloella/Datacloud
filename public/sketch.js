@@ -106,7 +106,7 @@ function draw() {
       }
     }
   pop();
-  textSize(32);
+  //textSize(32);
   fill(255);
   text(incomingData, width/2, height/2);
 }
