@@ -25,10 +25,16 @@ function newConnection(socket){
 	socket.on('incomingDataToServer', emitFunction);
 
 	function emitFunction(data){
-		setInterval(() => socket.broadcast.emit('ServerToClient', new Date().toTimeString()), 1000);
-		//socket.broadcast.emit('ServerToClient', data);
+		//setInterval(() => socket.broadcast.emit('ServerToClient', new Date().toTimeString()), 1000);
+		let randNum;
+		setInterval(function(){
+			//get a random value, and assign it a new variable
+			randNum = getRandomInt(0, 100);
+		}, 1000);
+
+		socket.broadcast.emit('ServerToClient', randNum);
 		//following line refers to sending data to all
 		//io.sockets.emit('mouse', data);
-		console.log(data);
+		console.log(randNum);
 	}
 }
