@@ -4,19 +4,21 @@ var socket = require('socket.io');
 //store the express functions to var app
 var app = express();
 //Create a server on localhost:3000
-var server = app.listen(process.env.PORT || 3000, function(){
-  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
-});
+//var server = app.listen(process.env.PORT || 3000, function(){
+//  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+//});
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
+server.listen(process.env.PORT || 3000);
+
 //host content as static on public
 app.use(express.static('public'));
 
 console.log("Node is running on port 3000...");
 
-//assign the server to the socket
-var io = socket(server);
 //dealing with server events / connection
 io.sockets.on('connection', newConnection); //callback
-
 
 //function to get a random number, from a minimum to a maximum value
 function getRandomInt(min, max) {
