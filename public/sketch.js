@@ -84,7 +84,7 @@ function setup() {
 }
 
 function draw() {
-  background(0, 20, 30);
+  background(incomingData, 20, 30);
   makeCircularMotion();
 
   push();
