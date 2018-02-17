@@ -1,7 +1,7 @@
-//function socketEvents(data){
-  //incomingData = data;
-  //console.log(data);
-//}
+function socketEvents(data){
+  incomingData = data;
+  console.log(data);
+}
 /*
 let ws;
 let wsUri = "ws:";
