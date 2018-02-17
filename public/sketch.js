@@ -42,6 +42,7 @@ let yCircular = 0;
 
 //sockets
 let socket;
+let incomingData;
 
 function setup() {
   createCanvas(1280, 720, WEBGL);
@@ -105,6 +106,9 @@ function draw() {
       }
     }
   pop();
+  textSize(32);
+  fill(255);
+  text(incomingData, width/2, height/2);
 }
 
 //Initializes camera controls
