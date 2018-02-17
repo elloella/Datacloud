@@ -49,7 +49,7 @@ function setup() {
   setAttributes('antialias', true);
 
   socket = io.connect('iot-network.herokuapp.com:3000');
-  socket.on('ServerToClient', function(socketEvents));
+  socket.on('ServerToClient', socketEvents);
 
   //mouseClick = createVector(width/2, height/2);
   posStart = createVector(width/2, height/2);
