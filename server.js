@@ -19,7 +19,7 @@ app.use('/sockets', express.static(__dirname + 'public/sockets'));
 
 	app.all('/*', function(req, res, next) {
 	    // Just send the index.html for other files to support HTML5Mode
-	    res.sendFile('index.html', { root: __dirname });
+	    res.sendFile('public/index.html', { root: __dirname });
 	});
 
 const io = socketIO(server);
