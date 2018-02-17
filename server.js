@@ -1,32 +1,82 @@
-'use strict';
+// HTTP Portion
+var http = require('http');
+// URL module
+var url = require('url');
+var path = require('path');
 
-const express = require('express');
-const socketIO = require('socket.io');
-const path = require('path');
+// Using the filesystem module
+var fs = require('fs');
 
-const PORT = process.env.PORT || 3000;
-const INDEX = path.join(__dirname, 'public/index.html');
+var server = http.createServer(handleRequest);
+server.listen(3000);
 
-const server = express()
-  .use((req, res) => res.sendFile(INDEX) )
-  .listen(PORT, () => console.log(`Listening on ${ PORT }`));
+console.log('Server started on port 3000');
 
-app.use('/js', express.static(__dirname + '/js'));
-app.use('/Blob', express.static(__dirname + 'public/Blob'));
-app.use('/Cubes', express.static(__dirname + 'public/Cubes'));
-app.use('/sketch', express.static(__dirname + 'public/sketch'));
-app.use('/sockets', express.static(__dirname + 'public/sockets'));
+function handleRequest(req, res) {
+  // What did we request?
+  var pathname = req.url;
 
-	app.all('/*', function(req, res, next) {
-	    // Just send the index.html for other files to support HTML5Mode
-	    res.sendFile('public/index.html', { root: __dirname });
-	});
+  // If blank let's ask for index.html
+  if (pathname == '/') {
+    pathname = 'public/index.html';
+  }
 
-const io = socketIO(server);
+  // Ok what's our file extension
+  var ext = path.extname(pathname);
 
-io.on('connection', (socket) => {
-  console.log('Client connected');
-  socket.on('disconnect', () => console.log('Client disconnected'));
-});
+  // Map extension to file type
+  var typeExt = {
+    '.html': 'text/html',
+    '.js':   'text/javascript',
+  };
 
-setInterval(() => io.emit('ServerToClient', new Date().toTimeString()), 1000);
+  // What is it?  Default to plain text
+  var contentType = typeExt[ext] || 'text/plain';
+
+  // User file system module
+  fs.readFile(__dirname + pathname,
+    // Callback function for reading
+    function (err, data) {
+      // if there is an error
+      if (err) {
+        res.writeHead(500);
+        return res.end('Error loading ' + pathname);
+      }
+      // Otherwise, send the data, the contents of the file
+      res.writeHead(200,{ 'Content-Type': contentType });
+      res.end(data);
+    }
+  );
+}
+
+// WebSocket Portion
+// WebSockets work with the HTTP server
+var io = require('socket.io').listen(server);
+
+// Register a callback function to run when we have an individual connection
+// This is run for each individual user that connects
+io.sockets.on('connection',
+  // We are given a websocket object in our function
+  function (socket) {
+    console.log("We have a new client: " + socket.id);
+    // When this user emits, client side: socket.emit('otherevent',some data);
+    socket.on('incomingDataToServer',
+      function(data) {
+        // Data comes in as whatever was sent, including objects
+        console.log("Received: " + data);
+
+        // Send it to all other clients
+        //socket.broadcast.emit('ServerToClient', data);
+				setInterval(() => io.emit('ServerToClient', new Date().toTimeString()), 1000);
+
+        // This is a way to send to everyone including sender
+        // io.sockets.emit('message', "this goes to everyone");
+
+      }
+    );
+
+    socket.on('disconnect', function() {
+      console.log("Client has disconnected");
+    });
+  }
+);
