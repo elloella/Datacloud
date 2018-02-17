@@ -47,8 +47,8 @@ function setup() {
   createCanvas(1280, 720, WEBGL);
   setAttributes('antialias', true);
 
-  //socket = io.connect('http://localhost:3000');
-  //socket.on('ServerToClient', socketEvents);
+  socket = io.connect('http://localhost:3000');
+  socket.on('ServerToClient', socketEvents);
 
   //mouseClick = createVector(width/2, height/2);
   posStart = createVector(width/2, height/2);

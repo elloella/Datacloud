@@ -1,6 +1,6 @@
-//function socketEvents(data){/
-//  console.log(data);
-//}
+function socketEvents(data){/
+  console.log(data);
+}
 /*
 let ws;
 let wsUri = "ws:";
