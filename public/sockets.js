@@ -1,7 +1,7 @@
 function socketEvents(data){
   console.log(data);
 }
-
+/*
 let ws;
 let wsUri = "ws:";
 let loc = window.location;
@@ -48,3 +48,4 @@ function doit(m) {
     ws.send(m);
   }
 }
+*/
