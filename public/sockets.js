@@ -1,5 +1,6 @@
 function socketEvents(data){
-  incomingData = data;
+  //incomingData = data;
+  console.log(data);
 }
 /*
 let ws;
