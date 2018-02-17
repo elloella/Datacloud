@@ -1,82 +1,53 @@
-// HTTP Portion
-var http = require('http');
-// URL module
-var url = require('url');
-var path = require('path');
+var app = require('express');
+var http = require ('http').Server(app);
+var io = require('socket.io')(http);
+var x = 'initial';
 
-// Using the filesystem module
-var fs = require('fs');
+app.set('port',(process.env.PORT || 5000));
+app.get('/', function(req, res){
+	res.sendFile(_dirname + 'index.html');
+});
 
-var server = http.createServer(handleRequest);
-server.listen(3000);
+io.on('Connection', function(socket){
+	x = socket;
+});
 
-console.log('Server started on port 3000');
+app.get('/sendevent', function (request, response){
+	console.log('xxx');
+	x.emit('incomingDataToServer', {hello: 'cachivache'});
+	response.send('Ok');
+});
 
-function handleRequest(req, res) {
-  // What did we request?
-  var pathname = req.url;
+http.listen(app.get('port'), function(){
+	console.log('listening on: ' + app.get('port'));
+});
+/*
+//store the express functions to var app
+var app = express();
+//Create a server on localhost:3000
+var server = app.listen((process.env.PORT || 3000, function(){
+  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+});
+//host content as static on public
+app.use(express.static('public'));
 
-  // If blank let's ask for index.html
-  if (pathname == '/') {
-    pathname = 'public/index.html';
-  }
+console.log("Node is running on port 5000...");
 
-  // Ok what's our file extension
-  var ext = path.extname(pathname);
+//assign the server to the socket
+var io = socket(server);
+//dealing with server events / connection
+io.sockets.on('connection', newConnection); //callback
 
-  // Map extension to file type
-  var typeExt = {
-    '.html': 'text/html',
-    '.js':   'text/javascript',
-  };
+//function that serves the new connection
+function newConnection(socket){
+	console.log('New connection: ' + socket.id);
+	socket.on('incomingDataToServer', emitFunction);
 
-  // What is it?  Default to plain text
-  var contentType = typeExt[ext] || 'text/plain';
-
-  // User file system module
-  fs.readFile(__dirname + pathname,
-    // Callback function for reading
-    function (err, data) {
-      // if there is an error
-      if (err) {
-        res.writeHead(500);
-        return res.end('Error loading ' + pathname);
-      }
-      // Otherwise, send the data, the contents of the file
-      res.writeHead(200,{ 'Content-Type': contentType });
-      res.end(data);
-    }
-  );
+	function emitFunction(data){
+		socket.broadcast.emit('ServerToClient', data);
+		//following line refers to sending data to all
+		//io.sockets.emit('mouse', data);
+		console.log(data);
+	}
 }
-
-// WebSocket Portion
-// WebSockets work with the HTTP server
-var io = require('socket.io').listen(server);
-
-// Register a callback function to run when we have an individual connection
-// This is run for each individual user that connects
-io.sockets.on('connection',
-  // We are given a websocket object in our function
-  function (socket) {
-    console.log("We have a new client: " + socket.id);
-    // When this user emits, client side: socket.emit('otherevent',some data);
-    socket.on('incomingDataToServer',
-      function(data) {
-        // Data comes in as whatever was sent, including objects
-        console.log("Received: " + data);
-
-        // Send it to all other clients
-        //socket.broadcast.emit('ServerToClient', data);
-				setInterval(() => io.emit('ServerToClient', new Date().toTimeString()), 1000);
-
-        // This is a way to send to everyone including sender
-        // io.sockets.emit('message', "this goes to everyone");
-
-      }
-    );
-
-    socket.on('disconnect', function() {
-      console.log("Client has disconnected");
-    });
-  }
-);
+*/
