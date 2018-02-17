@@ -1,4 +1,4 @@
-function socketEvents(data){/
+function socketEvents(data){
   console.log(data);
 }
 /*
