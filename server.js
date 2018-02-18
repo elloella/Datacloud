@@ -47,7 +47,7 @@ console.log("Node is running on port 3000...");
 var io = socket(server);
 //dealing with server events / connection
 io.sockets.on('connection', newConnection); //callback
-io.sockets.emit('ServerToClient', getRandomInt(0, 100));
+//io.sockets.emit('ServerToClient', getRandomInt(0, 100));
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -65,8 +65,8 @@ function newConnection(socket){
 
 	function emitFunction(data){
 		//setInterval(() => socket.broadcast.emit('ServerToClient', new Date().toTimeString()), 1000);
-    setInterval(() =>socket.broadcast.emit('ServerToClient', getRandomInt(0, 100)), 1000);
-    /*
+    //setInterval(() =>socket.broadcast.emit('ServerToClient', getRandomInt(0, 100)), 1000);
+
 		setInterval(function(){
 			//get a random value, and assign it a new variable
 			let randNum;
@@ -76,6 +76,5 @@ function newConnection(socket){
 			//io.sockets.emit('mouse', data);
 			console.log(randNum);
 		}, 1000);
-		*/
 	}
 }
