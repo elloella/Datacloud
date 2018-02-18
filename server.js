@@ -1,31 +1,8 @@
-/*'use strict';
-
-const express = require('express');
-const socketIO = require('socket.io');
-const path = require('path');
-
-const PORT = process.env.PORT || 3000;
-const INDEX = path.join(__dirname+'/index.html');
-
-//app.use(express.static('public'));
-//app.get('/index.html',function(req,res){
-	//res.sendFile(path.join(__dirname+'/index.html'));
-  //__dirname : It will resolve to your project folder.
-//});
-
-const server = express()
-  .use((req, res) => res.sendFile(INDEX) )
-  .listen(PORT, () => console.log(`Listening on ${ PORT }`));
-
-const io = socketIO(server);
-
-io.on('connection', (socket) => {
-  console.log('Client connected');
-  socket.on('disconnect', () => console.log('Client disconnected'));
-});
-let randNum = 1;
-setInterval(() => io.emit('ServerToClient', randNum), 1000);
-*/
+var mqtt = require('mqtt')
+var MQTT_TOPIC = "homeGet/light";
+var MQTT_ADDR = "mqtt://broker.i-dat.org:80";
+var MQTT_PORT = 80;
+var client  = mqtt.connect(MQTT_ADDR,{clientId: "webClient", keeplive: 1, clean: false, debug:true});
 
 var express = require('express');
 var socket = require('socket.io');
@@ -47,8 +24,6 @@ console.log("Node is running on port 3000...");
 var io = socket(server);
 //dealing with server events / connection
 io.sockets.on('connection', newConnection); //callback
-//io.sockets.emit('ServerToClient', getRandomInt(0, 100));
-//setInterval(() =>socket.broadcast.emit('ServerToClient', getRandomInt(0, 100)), 1000);
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -60,23 +35,55 @@ function getRandomInt(min, max) {
 //function that serves the new connection
 function newConnection(socket){
 	console.log('New connection: ' + socket.id);
-	socket.on('incomingDataToServer', emitFunction);
+	socket.on('ws-iot-network', emitFunction);
+	//setInterval(() =>socket.broadcast.emit('ServerToClient', getRandomInt(0, 100)), 1000);
 
-  //setInterval(() =>socket.broadcast.emit('ServerToClient', getRandomInt(0, 100)), 1000);
-  setInterval(() =>io.sockets.emit('ServerToClient', getRandomInt(0, 100)), 1000);
+  let randNum;
+  randNum = getRandomInt(0, 100);
+  socket.broadcast.emit('ServerToClient', randNum);
 
 	function emitFunction(data){
-    //setInterval(() =>socket.broadcast.emit('ServerToClient', getRandomInt(0, 100)), 1000);
-    /*
+		//socket.broadcast.emit('ServerToClient', data);
+		//console.log(data);
+		//setInterval(() => socket.broadcast.emit('ServerToClient', new Date().toTimeString()), 1000);
+
 		setInterval(function(){
 			//get a random value, and assign it a new variable
 			let randNum;
 			randNum = getRandomInt(0, 100);
 			socket.broadcast.emit('ServerToClient', randNum);
-			//following line refers to sending data to all
-			//io.sockets.emit('mouse', data);
-			console.log(randNum);
-		}, 1000);
-    */
+			//console.log(randNum);
+		},1000);
 	}
 }
+
+//MQTT
+client.on('connect', function () {
+    client.subscribe(MQTT_TOPIC, { qos: 2 });
+    client.publish(MQTT_TOPIC, '1000');
+});
+client.on('message', function (topic, message) {
+    // message is Buffer
+    let getMessage = message.toString();
+    let getNum = parseInt(getMessage);
+    console.log(getNum);
+    io.sockets.emit('ServerToClient', getNum),
+    //io.sockets.on('connection', function (socket) {
+    //  socket.broadcast.emit(getNum);
+    //});
+    //client.end();
+});
+
+/*
+client.on('error', function(){
+    console.log("ERROR")
+    client.end()
+})
+client.on('offline', function() {
+    console.log("offline");
+});
+
+client.on('reconnect', function() {
+    console.log("reconnect");
+});
+*/
