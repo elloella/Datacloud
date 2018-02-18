@@ -7,6 +7,12 @@ const path = require('path');
 const PORT = process.env.PORT || 3000;
 const INDEX = path.join(__dirname, './public/index.html');
 
+app.use(express.static('public'));
+app.get('*',function(req,res){
+  res.sendFile(path.join(__dirname+'./public/index.html'));
+  //__dirname : It will resolve to your project folder.
+});
+
 const server = express()
   .use((req, res) => res.sendFile(INDEX) )
   .listen(PORT, () => console.log(`Listening on ${ PORT }`));
