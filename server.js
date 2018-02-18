@@ -65,7 +65,7 @@ function newConnection(socket){
   setInterval(() =>socket.broadcast.emit('ServerToClient', getRandomInt(0, 100)), 1000);
 
 	function emitFunction(data){
-    setInterval(() =>socket.broadcast.emit('ServerToClient', getRandomInt(0, 100)), 1000);
+    //setInterval(() =>socket.broadcast.emit('ServerToClient', getRandomInt(0, 100)), 1000);
     /*
 		setInterval(function(){
 			//get a random value, and assign it a new variable
