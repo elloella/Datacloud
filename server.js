@@ -48,7 +48,7 @@ var io = socket(server);
 //dealing with server events / connection
 io.sockets.on('connection', newConnection); //callback
 //io.sockets.emit('ServerToClient', getRandomInt(0, 100));
-setInterval(() =>socket.broadcast.emit('ServerToClient', getRandomInt(0, 100)), 1000);
+//setInterval(() =>socket.broadcast.emit('ServerToClient', getRandomInt(0, 100)), 1000);
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
