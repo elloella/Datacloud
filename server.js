@@ -33,7 +33,7 @@ var socket = require('socket.io');
 //store the express functions to var app
 var app = express();
 //Create a server on localhost:3000
-var server = app.listen(process.env.PORT || 5000);
+var server = app.listen(process.env.PORT || 3000);
 
 //var server = app.listen((process.env.PORT || 3000, function(){
   //console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
@@ -47,6 +47,7 @@ console.log("Node is running on port 3000...");
 var io = socket(server);
 //dealing with server events / connection
 io.sockets.on('connection', newConnection); //callback
+io.sockets.emit('ServerToClient', getRandomInt(0, 100));
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -60,6 +61,7 @@ function newConnection(socket){
 	console.log('New connection: ' + socket.id);
 	socket.on('incomingDataToServer', emitFunction);
 
+  setInterval(() =>socket.broadcast.emit('ServerToClient', getRandomInt(0, 100)), 1000);
 	setInterval(() =>socket.broadcast.emit('ServerToClient', getRandomInt(0, 100)), 1000);
 
 	function emitFunction(data){
