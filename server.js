@@ -64,17 +64,17 @@ function newConnection(socket){
   //setInterval(() =>socket.broadcast.emit('ServerToClient', getRandomInt(0, 100)), 1000);
 
 	function emitFunction(data){
-		//setInterval(() => socket.broadcast.emit('ServerToClient', new Date().toTimeString()), 1000);
-    //setInterval(() =>socket.broadcast.emit('ServerToClient', getRandomInt(0, 100)), 1000);
-
+    setInterval(() =>socket.broadcast.emit('ServerToClient', getRandomInt(0, 100)), 1000);
+    /*
 		setInterval(function(){
 			//get a random value, and assign it a new variable
 			let randNum;
 			randNum = getRandomInt(0, 100);
-			socket.broadcast.emit('ServerToClient', 255);
+			socket.broadcast.emit('ServerToClient', randNum);
 			//following line refers to sending data to all
 			//io.sockets.emit('mouse', data);
 			console.log(randNum);
 		}, 1000);
+    */
 	}
 }
