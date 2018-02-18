@@ -33,7 +33,7 @@ var socket = require('socket.io');
 //store the express functions to var app
 var app = express();
 //Create a server on localhost:3000
-var server = app.listen(process.env.PORT || 3000);
+var server = app.listen(process.env.PORT || 5000);
 
 //var server = app.listen((process.env.PORT || 3000, function(){
   //console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
@@ -60,17 +60,20 @@ function newConnection(socket){
 	console.log('New connection: ' + socket.id);
 	socket.on('incomingDataToServer', emitFunction);
 
+	setInterval(() =>socket.broadcast.emit('ServerToClient', getRandomInt(0, 100)), 1000);
+
 	function emitFunction(data){
 		//setInterval(() => socket.broadcast.emit('ServerToClient', new Date().toTimeString()), 1000);
-		let randNum;
+/*
 		setInterval(function(){
 			//get a random value, and assign it a new variable
+			let randNum;
 			randNum = getRandomInt(0, 100);
+			socket.broadcast.emit('ServerToClient', 255);
+			//following line refers to sending data to all
+			//io.sockets.emit('mouse', data);
+			console.log(randNum);
 		}, 1000);
-
-		socket.broadcast.emit('ServerToClient', randNum);
-		//following line refers to sending data to all
-		//io.sockets.emit('mouse', data);
-		console.log(randNum);
+		*/
 	}
 }
