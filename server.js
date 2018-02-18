@@ -5,11 +5,11 @@ const socketIO = require('socket.io');
 const path = require('path');
 
 const PORT = process.env.PORT || 3000;
-const INDEX = path.join(__dirname, './public/index.html');
+const INDEX = path.join(__dirname+'/index.html');
 
 //app.use(express.static('public'));
-//app.get('*',function(req,res){
-//  res.sendFile(path.join(__dirname+'./public/index.html'));
+//app.get('/index.html',function(req,res){
+	//res.sendFile(path.join(__dirname+'/index.html'));
   //__dirname : It will resolve to your project folder.
 //});
 
