@@ -1,4 +1,4 @@
-'use strict';
+/*'use strict';
 
 const express = require('express');
 const socketIO = require('socket.io');
@@ -25,8 +25,8 @@ io.on('connection', (socket) => {
 });
 let randNum = 1;
 setInterval(() => io.emit('ServerToClient', randNum), 1000);
+*/
 
-/*
 var express = require('express');
 var socket = require('socket.io');
 
@@ -67,4 +67,3 @@ function newConnection(socket){
 		console.log(randNum);
 	}
 }
-*/
