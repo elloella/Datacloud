@@ -48,7 +48,7 @@ function setup() {
   createCanvas(1280, 720, WEBGL);
   setAttributes('antialias', true);
 
-  socket = io.connect('https://iot-network.herokuapp.com');
+  socket = io.connect('https://iot-network.herokuapp.com:3000');
   socket.on('ServerToClient', socketEvents);
 
   //mouseClick = createVector(width/2, height/2);
