@@ -23,8 +23,8 @@ io.on('connection', (socket) => {
   console.log('Client connected');
   socket.on('disconnect', () => console.log('Client disconnected'));
 });
-
-setInterval(() => io.emit('ServerToClient', new Date().toTimeString()), 1000);
+let randNum = 1;
+setInterval(() => io.emit('ServerToClient', randNum), 1000);
 
 /*
 var express = require('express');
