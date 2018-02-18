@@ -48,6 +48,13 @@ var io = socket(server);
 //dealing with server events / connection
 io.sockets.on('connection', newConnection); //callback
 
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  //The maximum is exclusive and the minimum is inclusive
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
 //function that serves the new connection
 function newConnection(socket){
 	console.log('New connection: ' + socket.id);
