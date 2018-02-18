@@ -1,9 +1,10 @@
+/*
 var mqtt = require('mqtt')
 var MQTT_TOPIC = "homeGet/light";
 var MQTT_ADDR = "mqtt://broker.i-dat.org:80";
 var MQTT_PORT = 80;
 var client  = mqtt.connect(MQTT_ADDR,{clientId: "webClient", keeplive: 1, clean: false, debug:true});
-
+*/
 var express = require('express');
 var socket = require('socket.io');
 
@@ -56,7 +57,7 @@ function newConnection(socket){
 		},1000);
 	}
 }
-
+/*
 //MQTT
 client.on('connect', function () {
     client.subscribe(MQTT_TOPIC, { qos: 2 });
@@ -73,7 +74,7 @@ client.on('message', function (topic, message) {
     //});
     //client.end();
 });
-
+*/
 /*
 client.on('error', function(){
     console.log("ERROR")
