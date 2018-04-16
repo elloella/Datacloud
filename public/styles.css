@@ -1,0 +1,36 @@
+body{
+  padding: 0; /* creates the space above and below the header.*/
+  margin: 0;
+  background-color: #F5FFFA; /*background colour of the whole page.*/
+}
+
+h1{
+text-align: center; /*Setting header text to centre.*/
+color: #212121; /*colour of the text.*/
+
+}
+
+
+.newHeadings{
+  font-family: sans-serif;  /*Picking the font family.*/
+  width: 100%; /*Width of the header.*/
+  padding: 10px;
+  background-color: #66FFB2; /*changes colour of the header.*/
+
+}
+
+canvas {
+    padding-left: 0; /*Sets the canvas to the centre of the screen. */
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 800px;
+}
+
+footer{
+  padding: 20px; /* footer size.*/
+  background-color: #F5FFFA;  /*footer colour.*/
+  width: 100%;
+
+}
